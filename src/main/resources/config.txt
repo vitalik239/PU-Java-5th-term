@@ -1,0 +1,4 @@
+type:500,800
+count:1000
+separator:+
+logfile:/src/path
