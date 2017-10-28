@@ -30,7 +30,6 @@ class ArgParser {
                     throw new IllegalArgumentException("Could not find " + a.toString().toLowerCase() + " file.");
                 }
             }
-            System.out.println(files.values());
         } else {
             throw new IllegalArgumentException("Wrong amount of arguments.");
         }

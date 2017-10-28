@@ -19,17 +19,36 @@ public class Config {
         BufferedReader reader = new BufferedReader(new InputStreamReader(configStream));
 
         while ((s = reader.readLine()) != null) {
-            System.out.println(s);
             String[] keyValue = s.split(CONFIG_SEPARATOR, 2);
-            Params key = Params.valueOf(keyValue[0]);
-            System.out.println(key);
+
+            Params key = null;
+            try {
+                key = Params.valueOf(keyValue[0].toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                Logger.log("Cannot recognize this key: " + keyValue[0]);
+            }
+            if (key == null) {
+                continue;
+            }
 
             if (params.containsKey(key)) {
                 throw new ConfigReaderException("Duplicate key found");
             } else {
-                params.put(Params.valueOf(keyValue[0]), keyValue[1]);
+                params.put(key, keyValue[1]);
             }
         }
 
+    }
+
+    public String getSeparator() {
+        return params.get(Params.SEPARATOR);
+    }
+
+    public String getLogfile() {
+        return params.get(Params.LOGFILE);
+    }
+
+    public String getMaxNumber() {
+        return params.get(Params.MAX_NUMBER);
     }
 }

@@ -1,37 +1,32 @@
 package lab;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import lab.functions.Decoder;
 import lab.functions.Encoder;
 import lab.functions.Function;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Main {
-    private static Logger logger = Logger.getLogger("Main");
-
     public static void main(String[] args) {
         ArgParser parser = new ArgParser(args);
 
         try {
             parser.parse();
         } catch (IllegalArgumentException ex) {
-            logger.log(Level.ALL, ex.getMessage());
+            Logger.log("Wrong arguments");
             return;
         }
 
         FileUtil fileUtil = new FileUtil();
-        try (final InputStream inputStream = fileUtil.getInputStream(parser.getInputFilename());
-             final OutputStream outputStream = fileUtil.getOutputStream(parser.getOutputFilename());
+        try (InputStream inputStream = fileUtil.getInputStream(parser.getInputFilename());
+             OutputStream outputStream = fileUtil.getOutputStream(parser.getOutputFilename());
              InputStream configStream = fileUtil.getInputStream(parser.getConfigFilename())) {
             Config config = new Config(configStream);
-
-            
+            Function encoder = new Encoder(config);
+            encoder.execute(inputStream, outputStream);
         } catch (Exception ex) {
-            logger.log(Level.ALL, ex.getMessage());
-            ex.printStackTrace();
+            Logger.log(ex.getMessage());
         }
     }
 }
