@@ -36,12 +36,14 @@ public class Decoder implements Function {
                 }
                 count = inputStream.read();
                 symbol = inputStream.read();
+
                 for (int i = 0; i < count; i++) {
                     outputStream.write(symbol);
                 }
             } while (separator != -1 & count != -1 & symbol != -1);
 
             outputStream.flush();
+            outputStream.close();
         } catch (IOException ex) {
             throw ex;
         }

@@ -33,7 +33,6 @@ public class Encoder implements Function {
 
             do {
                 current = inputStream.read();
-
                 if (current == previous & count != MAX_NUMBER) {
                     count += 1;
                 } else if (previous != 0) {
@@ -41,11 +40,13 @@ public class Encoder implements Function {
                         outputStream.write(SEPARATOR);
                     outputStream.write(count);
                     outputStream.write(previous);
+
                     count = 1;
                 }
                 previous = current;
             } while (current != -1);
             outputStream.flush();
+            outputStream.close();
         } catch (IOException ex) {
             throw ex;
         }
