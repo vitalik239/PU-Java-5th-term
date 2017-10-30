@@ -6,10 +6,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.EnumMap;
 
 public class Config {
-    private enum Params {SEPARATOR, MAX_NUMBER, LOGFILE}
+    private enum Params {SEPARATOR, CLASSES, CONFIGS}
     private static String CONFIG_SEPARATOR = ":";
 
     EnumMap<Params, String> params = new EnumMap<>(Params.class);
@@ -20,7 +21,6 @@ public class Config {
 
         while ((s = reader.readLine()) != null) {
             String[] keyValue = s.split(CONFIG_SEPARATOR, 2);
-
             Params key = null;
             try {
                 key = Params.valueOf(keyValue[0].toUpperCase());
@@ -40,15 +40,11 @@ public class Config {
 
     }
 
-    public String getSeparator() {
-        return params.get(Params.SEPARATOR);
+    public String[] getClasses() {
+        return params.get(Params.CLASSES).split(params.get(Params.SEPARATOR));
     }
 
-    public String getLogfile() {
-        return params.get(Params.LOGFILE);
-    }
-
-    public String getMaxNumber() {
-        return params.get(Params.MAX_NUMBER);
+    public String[] getConfigs() {
+        return params.get(Params.CONFIGS).split(params.get(Params.SEPARATOR));
     }
 }

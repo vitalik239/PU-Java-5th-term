@@ -1,2 +1,3 @@
-separator:+
-max_number:3
+separator:;
+classes:lab.functions.Slicer;lab.functions.LengthMeasurer;lab.functions.Summator
+configs:src/main/resources/function_config.txt;src/main/resources/function_config.txt;src/main/resources/function_config.txt

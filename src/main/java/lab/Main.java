@@ -1,13 +1,14 @@
 package lab;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import lab.functions.Decoder;
-import lab.functions.Encoder;
-import lab.functions.Function;
-
 import java.io.*;
+import java.util.ArrayList;
+import lab.FileUtil;
+import org.apache.commons.io.IOUtils;
 
 public class Main {
+    enum ConfigParams {SEPARATOR, CLASSES, CONFIGS}
+    enum FunctionsParams {LENGTH}
+
     public static void main(String[] args) {
         ArgParser parser = new ArgParser(args);
 
@@ -18,14 +19,25 @@ public class Main {
             return;
         }
 
-        FileUtil fileUtil = new FileUtil();
-        try (InputStream inputStream = fileUtil.getInputStream(parser.getInputFilename());
-             OutputStream outputStream = fileUtil.getOutputStream(parser.getOutputFilename());
-             InputStream configStream = fileUtil.getInputStream(parser.getConfigFilename())) {
+        try (InputStream inputStream = FileUtil.getInputStream(parser.getInputFilename());
+             OutputStream outputStream = FileUtil.getOutputStream(parser.getOutputFilename());
+             InputStream configStream = FileUtil.getInputStream(parser.getConfigFilename())) {
             Config config = new Config(configStream);
-            Function encoder = new Encoder(config);
-            encoder.execute(inputStream, outputStream);
+
+            String inputString = IOUtils.toString(inputStream);
+            String[] classes = config.getClasses();
+            String[] configs = config.getConfigs();
+
+            if (classes.length != configs.length) {
+                throw new IllegalArgumentException("Wrong amount");
+            }
+
+            Conveyor conveyor = new Conveyor(classes, configs, inputString);
+            conveyor.run();
+            String outputString = conveyor.getResult();
+            outputStream.write(outputString.getBytes());
         } catch (Exception ex) {
+            ex.printStackTrace();
             Logger.log(ex.getMessage());
         }
     }
