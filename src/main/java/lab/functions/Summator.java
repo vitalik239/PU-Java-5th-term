@@ -2,7 +2,7 @@ package lab.functions;
 
 import lab.FileUtil;
 import lab.FunctionConfig;
-
+import lab.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -17,7 +17,7 @@ public class Summator implements Function {
     }
 
     public void execute(Object previous) {
-        System.err.println(previous.getClass());
+        Logger.log(previous.getClass().toString());
         Integer[] ints = (Integer[])((Function)previous).getResult();
         for (Integer anInt : ints) {
             result += anInt;

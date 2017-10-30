@@ -35,6 +35,7 @@ public class Main {
             Conveyor conveyor = new Conveyor(classes, configs, inputString);
             conveyor.run();
             String outputString = conveyor.getResult();
+
             outputStream.write(outputString.getBytes());
         } catch (Exception ex) {
             ex.printStackTrace();

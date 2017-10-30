@@ -32,6 +32,9 @@ public class Conveyor {
         }
         m = cls.getMethod("getResult");
         result = m.invoke(prev_instance).toString();
+        if (!result.equals(String.valueOf(input.length()))) {
+            Logger.log("Expected " + String.valueOf(input.length()) + " got " + result);
+        }
     }
 
     String getResult() {

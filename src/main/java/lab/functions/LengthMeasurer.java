@@ -2,6 +2,7 @@ package lab.functions;
 
 import lab.FileUtil;
 import lab.FunctionConfig;
+import lab.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,8 +18,7 @@ public class LengthMeasurer implements Function {
     }
 
     public void execute(Object previous) {
-        System.err.println(previous.getClass());
-
+        Logger.log(previous.getClass().toString());
         String[] strings = (String[])((Function)previous).getResult();
         result = new Integer[strings.length];
         for (int i = 0; i < strings.length; i++) {
