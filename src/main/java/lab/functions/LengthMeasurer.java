@@ -7,7 +7,7 @@ import lab.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class LengthMeasurer implements Function {
+public class LengthMeasurer implements Function<String[], Integer[]> {
     private Integer[] result = null;
     private FunctionConfig config = null;
 
@@ -17,9 +17,9 @@ public class LengthMeasurer implements Function {
         configStream.close();
     }
 
-    public void execute(Object previous) {
-        Logger.log(previous.getClass().toString());
-        String[] strings = (String[])((Function)previous).getResult();
+    public void execute(Function<?, String[]> previous) {
+        Logger.log("Previous function was " + previous.toString());
+        String[] strings = previous.getResult();
         result = new Integer[strings.length];
         for (int i = 0; i < strings.length; i++) {
             result[i] = strings[i].length();

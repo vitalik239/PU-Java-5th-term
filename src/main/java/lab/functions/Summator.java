@@ -6,7 +6,7 @@ import lab.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Summator implements Function {
+public class Summator implements Function<Integer[], Integer> {
     private Integer result = 0;
     private FunctionConfig config = null;
 
@@ -16,9 +16,9 @@ public class Summator implements Function {
         configStream.close();
     }
 
-    public void execute(Object previous) {
-        Logger.log(previous.getClass().toString());
-        Integer[] ints = (Integer[])((Function)previous).getResult();
+    public void execute(Function<?, Integer[]> previous) {
+        Logger.log("Previous function was " + previous.toString());
+        Integer[] ints = previous.getResult();
         for (Integer anInt : ints) {
             result += anInt;
         }

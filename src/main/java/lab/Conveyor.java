@@ -2,6 +2,7 @@ package lab;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import lab.functions.*;
 
 public class Conveyor {
     private String[] classes;
@@ -20,14 +21,18 @@ public class Conveyor {
         Constructor<?> con = cls.getConstructor(String.class);
         Object prev_instance = con.newInstance(configs[0]);
         Method m = cls.getMethod("execute", String.class);
+        Logger.log("Invoking " + prev_instance.toString());
         m.invoke(prev_instance, input);
+        Logger.log("Completed " + prev_instance.toString());
 
         for (int i = 1; i < classes.length; i++) {
             cls = Class.forName(classes[i]);
             con = cls.getConstructor(String.class);
             Object instance = con.newInstance(configs[i]);
-            m = cls.getMethod("execute", Object.class);
-            m.invoke(instance, prev_instance);
+            m = cls.getMethod("execute", Function.class);
+            Logger.log("Invoking " + instance.toString());
+            m.invoke(instance, (Function)prev_instance);
+            Logger.log("Completed " + instance.toString());
             prev_instance = instance;
         }
         m = cls.getMethod("getResult");

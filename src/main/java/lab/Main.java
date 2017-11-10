@@ -6,9 +6,6 @@ import lab.FileUtil;
 import org.apache.commons.io.IOUtils;
 
 public class Main {
-    enum ConfigParams {SEPARATOR, CLASSES, CONFIGS}
-    enum FunctionsParams {LENGTH}
-
     public static void main(String[] args) {
         ArgParser parser = new ArgParser(args);
 
@@ -33,12 +30,14 @@ public class Main {
             }
 
             Conveyor conveyor = new Conveyor(classes, configs, inputString);
+            Logger.log("Conveyor started");
             conveyor.run();
+            Logger.log("Conveyor finished");
+
             String outputString = conveyor.getResult();
 
             outputStream.write(outputString.getBytes());
         } catch (Exception ex) {
-            ex.printStackTrace();
             Logger.log(ex.getMessage());
         }
     }
