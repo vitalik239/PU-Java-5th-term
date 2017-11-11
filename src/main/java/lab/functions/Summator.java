@@ -24,6 +24,15 @@ public class Summator implements Function<Integer[], Integer> {
         }
     }
 
+
+    public Class inputClass() {
+        return Integer[].class;
+    }
+
+    public Class resultClass() {
+        return Integer.class;
+    }
+
     public Integer getResult() {
         return result;
     }

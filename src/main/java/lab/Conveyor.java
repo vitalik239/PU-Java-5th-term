@@ -2,6 +2,8 @@ package lab;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+
+import lab.exceptions.WrongClassFunctionResult;
 import lab.functions.*;
 
 public class Conveyor {
@@ -19,7 +21,7 @@ public class Conveyor {
     void run() throws Exception {
         Class<?> cls = Class.forName(classes[0]);
         Constructor<?> con = cls.getConstructor(String.class);
-        Object prev_instance = con.newInstance(configs[0]);
+        Function prev_instance = (Function) con.newInstance(configs[0]);
         Method m = cls.getMethod("execute", String.class);
         Logger.log("Invoking " + prev_instance.toString());
         m.invoke(prev_instance, input);
@@ -28,15 +30,21 @@ public class Conveyor {
         for (int i = 1; i < classes.length; i++) {
             cls = Class.forName(classes[i]);
             con = cls.getConstructor(String.class);
-            Object instance = con.newInstance(configs[i]);
-            m = cls.getMethod("execute", Function.class);
+            Function instance = (Function)con.newInstance(configs[i]);
+
+            if (instance.inputClass() != prev_instance.resultClass()) {
+                throw new WrongClassFunctionResult
+                        (instance.toString() + " supposed to get " + prev_instance.resultClass().toString());
+            }
+
             Logger.log("Invoking " + instance.toString());
-            m.invoke(instance, (Function)prev_instance);
+            instance.execute(prev_instance);
+       //     m.invoke(instance, (Function)prev_instance);
             Logger.log("Completed " + instance.toString());
             prev_instance = instance;
         }
-        m = cls.getMethod("getResult");
-        result = m.invoke(prev_instance).toString();
+
+        result = prev_instance.getResult().toString();
         if (!result.equals(String.valueOf(input.length()))) {
             Logger.log("Expected " + String.valueOf(input.length()) + " got " + result);
         }

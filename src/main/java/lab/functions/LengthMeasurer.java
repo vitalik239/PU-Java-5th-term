@@ -3,6 +3,7 @@ package lab.functions;
 import lab.FileUtil;
 import lab.FunctionConfig;
 import lab.Logger;
+import lab.exceptions.WrongClassFunctionResult;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,14 @@ public class LengthMeasurer implements Function<String[], Integer[]> {
             result[i] = strings[i].length();
         }
 
+    }
+
+    public Class inputClass() {
+        return String[].class;
+    }
+
+    public Class resultClass() {
+        return Integer[].class;
     }
 
     public Integer[] getResult() {

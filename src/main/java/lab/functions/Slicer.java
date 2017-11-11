@@ -36,6 +36,14 @@ public class Slicer implements Function<String, String[]> {
         }
     }
 
+    public Class inputClass() {
+        return String.class;
+    }
+
+    public Class resultClass() {
+        return String[].class;
+    }
+
     public String[] getResult() {
         return result;
     }
