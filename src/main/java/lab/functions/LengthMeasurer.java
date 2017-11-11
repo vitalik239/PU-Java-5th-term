@@ -21,7 +21,7 @@ public class LengthMeasurer implements Function<String[], Integer[]> {
     public void execute(Function<?, String[]> previous) throws Exception {
         if (this.inputClass() != previous.resultClass()) {
             throw new WrongClassFunctionResult
-                    (this.toString() + " supposed to get " + previous.resultClass().toString());
+                    (this.toString() + " supposed to get " + this.resultClass().toString());
         }
 
         Logger.log("Previous function was " + previous.toString());
