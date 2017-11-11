@@ -9,14 +9,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-public class Slicer implements Function<String, String[]> {
-    private FunctionConfig config = null;
-    private String[] result = null;
+public class Slicer extends Function<String, String[]> {
+    public Slicer(String configPath, Function<?, String> previous) throws Exception {
+        super(configPath, previous);
+    }
 
-    public Slicer(String configPath) throws IOException {
-        InputStream configStream = FileUtil.getInputStream(configPath);
-        this.config = new FunctionConfig(configStream);
-        configStream.close();
+    public Slicer(String configPath, String input) throws Exception {
+        super(configPath, input);
     }
 
     public void execute(String s) {
@@ -27,30 +26,15 @@ public class Slicer implements Function<String, String[]> {
         }
     }
 
-    public void execute(Function<?, String> previous)  throws Exception {
-        if (this.inputClass() != previous.resultClass()) {
-            throw new WrongClassFunctionResult
-                    (this.toString() + " supposed to get " + this.resultClass().toString());
-        }
-
-        Logger.log("Previous function was " + previous.toString());
-        String s = previous.getResult();
+    public void execute()  throws Exception {
         int length = Integer.parseInt(config.getLength());
-        result = new String[(s.length() + length - 1) / length];
-        for (int i = 0; i < s.length(); i += length) {
-            result[i / length] = s.subSequence(i, Math.min(i + length, s.length())).toString();
+        result = new String[(previous_result.length() + length - 1) / length];
+        for (int i = 0; i < previous_result.length(); i += length) {
+            result[i / length] = previous_result.subSequence(i, Math.min(i + length, previous_result.length())).toString();
         }
     }
 
     public Class inputClass() {
         return String.class;
-    }
-
-    public Class resultClass() {
-        return String[].class;
-    }
-
-    public String[] getResult() {
-        return result;
     }
 }

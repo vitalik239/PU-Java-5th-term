@@ -20,22 +20,21 @@ public class Pipeline {
 
     void run() throws Exception {
         Class<?> cls = Class.forName(classes[0]);
-        Constructor<?> con = cls.getConstructor(String.class);
-        Function prev_instance = (Function) con.newInstance(configs[0]);
-        Method m = cls.getMethod("execute", String.class);
+        Constructor<?> con = cls.getConstructor(String.class, String.class);
+        Function prev_instance = (Function) con.newInstance(configs[0], input);
         Logger.log("Invoking " + prev_instance.toString());
-        m.invoke(prev_instance, input);
+        prev_instance.execute();
         Logger.log("Completed " + prev_instance.toString());
 
         for (int i = 1; i < classes.length; i++) {
             cls = Class.forName(classes[i]);
-            con = cls.getConstructor(String.class);
-            Function instance = (Function)con.newInstance(configs[i]);
+            con = cls.getConstructor(String.class, Function.class);
+            Function instance = (Function)con.newInstance(configs[i], prev_instance);
 
             Logger.log("Invoking " + instance.toString());
-            instance.execute(prev_instance);
-       //     m.invoke(instance, (Function)prev_instance);
+            instance.execute();
             Logger.log("Completed " + instance.toString());
+
             prev_instance = instance;
         }
 
