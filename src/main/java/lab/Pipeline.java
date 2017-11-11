@@ -6,13 +6,13 @@ import java.lang.reflect.Method;
 import lab.exceptions.WrongClassFunctionResult;
 import lab.functions.*;
 
-public class Conveyor {
+public class Pipeline {
     private String[] classes;
     private String[] configs;
     private String input;
     private String result;
 
-    Conveyor(String[] classes, String[] configs, String input) {
+    Pipeline(String[] classes, String[] configs, String input) {
         this.classes = classes;
         this.configs = configs;
         this.input = input;
@@ -31,11 +31,6 @@ public class Conveyor {
             cls = Class.forName(classes[i]);
             con = cls.getConstructor(String.class);
             Function instance = (Function)con.newInstance(configs[i]);
-
-            if (instance.inputClass() != prev_instance.resultClass()) {
-                throw new WrongClassFunctionResult
-                        (instance.toString() + " supposed to get " + prev_instance.resultClass().toString());
-            }
 
             Logger.log("Invoking " + instance.toString());
             instance.execute(prev_instance);

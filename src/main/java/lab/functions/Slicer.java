@@ -3,6 +3,7 @@ package lab.functions;
 import lab.FileUtil;
 import lab.FunctionConfig;
 import lab.Logger;
+import lab.exceptions.WrongClassFunctionResult;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +27,12 @@ public class Slicer implements Function<String, String[]> {
         }
     }
 
-    public void execute(Function<?, String> previous) {
+    public void execute(Function<?, String> previous)  throws Exception {
+        if (this.inputClass() != previous.resultClass()) {
+            throw new WrongClassFunctionResult
+                    (this.toString() + " supposed to get " + previous.resultClass().toString());
+        }
+
         Logger.log("Previous function was " + previous.toString());
         String s = previous.getResult();
         int length = Integer.parseInt(config.getLength());

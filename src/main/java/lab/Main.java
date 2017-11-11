@@ -1,8 +1,7 @@
 package lab;
 
 import java.io.*;
-import java.util.ArrayList;
-import lab.FileUtil;
+
 import org.apache.commons.io.IOUtils;
 
 public class Main {
@@ -29,12 +28,12 @@ public class Main {
                 throw new IllegalArgumentException("Wrong amount");
             }
 
-            Conveyor conveyor = new Conveyor(classes, configs, inputString);
-            Logger.log("Conveyor started");
-            conveyor.run();
-            Logger.log("Conveyor finished");
+            Pipeline pipeline = new Pipeline(classes, configs, inputString);
+            Logger.log("Pipeline started");
+            pipeline.run();
+            Logger.log("Pipeline finished");
 
-            String outputString = conveyor.getResult();
+            String outputString = pipeline.getResult();
 
             outputStream.write(outputString.getBytes());
         } catch (Exception ex) {

@@ -18,7 +18,12 @@ public class LengthMeasurer implements Function<String[], Integer[]> {
         configStream.close();
     }
 
-    public void execute(Function<?, String[]> previous) {
+    public void execute(Function<?, String[]> previous) throws Exception {
+        if (this.inputClass() != previous.resultClass()) {
+            throw new WrongClassFunctionResult
+                    (this.toString() + " supposed to get " + previous.resultClass().toString());
+        }
+
         Logger.log("Previous function was " + previous.toString());
         String[] strings = previous.getResult();
         result = new Integer[strings.length];

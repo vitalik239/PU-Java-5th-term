@@ -3,6 +3,8 @@ package lab.functions;
 import lab.FileUtil;
 import lab.FunctionConfig;
 import lab.Logger;
+import lab.exceptions.WrongClassFunctionResult;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,7 +18,12 @@ public class Summator implements Function<Integer[], Integer> {
         configStream.close();
     }
 
-    public void execute(Function<?, Integer[]> previous) {
+    public void execute(Function<?, Integer[]> previous) throws Exception {
+        if (this.inputClass() != previous.resultClass()) {
+            throw new WrongClassFunctionResult
+                    (this.toString() + " supposed to get " + previous.resultClass().toString());
+        }
+
         Logger.log("Previous function was " + previous.toString());
         Integer[] ints = previous.getResult();
         for (Integer anInt : ints) {
