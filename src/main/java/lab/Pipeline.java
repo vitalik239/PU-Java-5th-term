@@ -29,6 +29,7 @@ public class Pipeline {
         for (int i = 1; i < classes.length; i++) {
             cls = Class.forName(classes[i]);
             con = cls.getConstructor(String.class, Function.class);
+
             Function instance = (Function)con.newInstance(configs[i], prev_instance);
 
             Logger.log("Invoking " + instance.toString());
@@ -38,7 +39,7 @@ public class Pipeline {
             prev_instance = instance;
         }
 
-        result = prev_instance.getResult().toString();
+        result = prev_instance.getResult(Integer.class).toString();
         if (!result.equals(String.valueOf(input.length()))) {
             Logger.log("Expected " + String.valueOf(input.length()) + " got " + result);
         }

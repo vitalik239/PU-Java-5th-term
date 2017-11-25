@@ -10,9 +10,13 @@ import java.io.InputStream;
 import java.util.Set;
 
 public abstract class Function<S, T> {
-    protected final S previous_result;
+    protected Class prev_class;
+    protected Object prev = null;
+    protected S previous_result = null;
     protected T result;
     protected final FunctionConfig config;
+    protected InputConverter inputConverter;
+    protected OutputConverter outputConverter;
 
     public Function(String configPath, S input) throws Exception {
         if (!configPath.isEmpty()) {
@@ -23,7 +27,7 @@ public abstract class Function<S, T> {
             this.config = null;
         }
         previous_result = input;
-        Logger.log(this.toString() + "created");
+        Logger.log(this.toString() + " created");
     }
 
     public Function(String configPath, Function previous) throws Exception {
@@ -35,20 +39,23 @@ public abstract class Function<S, T> {
             this.config = null;
         }
 
-        if (previous.resultClass().contains(this.inputClass())) {
-            previous_result = previous.getResult(this.inputClass());
+        Set<Class> intersection = this.inputClasses();
+        intersection.retainAll(previous.outputClasses());
+        if (!intersection.isEmpty()) {
+            prev_class = intersection.iterator().next();
+            prev = previous.outputConverter.get(prev_class);
         } else {
             throw new WrongClassFunctionResult("Expected smth else");
         }
         Logger.log(this.toString() + "created");
     }
 
-    public static abstract class inputConverter {
-        abstract T convert
+    public interface InputConverter {
+        void convert(Object prev, Class clz) throws Exception;
     }
 
-    public static abstract class outputConverter {
-        abstract Object convert(Class cls);
+    public interface OutputConverter {
+        Object get(Class clz) throws Exception;
     }
 
     public abstract void execute() throws Exception;
@@ -57,8 +64,8 @@ public abstract class Function<S, T> {
 
     public abstract Set<Class> outputClasses();
 
-    public Object getResult(Class clz) {
-        return outputConverter.convert(clz);
+    public Object getResult(Class clz) throws Exception {
+        return outputConverter.get(clz);
     }
 
     public T getStandartResult() {
