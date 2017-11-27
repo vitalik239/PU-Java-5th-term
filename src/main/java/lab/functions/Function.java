@@ -4,21 +4,20 @@ package lab.functions;
 import lab.FileUtil;
 import lab.FunctionConfig;
 import lab.Logger;
+import lab.MyClasses.Adapter;
 import lab.exceptions.WrongClassFunctionResult;
 
 import java.io.InputStream;
 import java.util.Set;
 
-public abstract class Function<S, T> {
-    protected Class prev_class;
-    protected Object prev = null;
-    protected S previous_result = null;
+public abstract class Function<T> {
+    protected Object previous_result = null;
+    protected Class previous_class = null;
     protected T result;
     protected final FunctionConfig config;
-    protected InputConverter inputConverter;
     protected OutputConverter outputConverter;
 
-    public Function(String configPath, S input) throws Exception {
+    public Function(String configPath, Object input) throws Exception {
         if (!configPath.isEmpty()) {
             InputStream configStream = FileUtil.getInputStream(configPath);
             this.config = new FunctionConfig(configStream);
@@ -26,6 +25,7 @@ public abstract class Function<S, T> {
         } else {
             this.config = null;
         }
+        previous_class = input.getClass();
         previous_result = input;
         Logger.log(this.toString() + " created");
     }
@@ -42,16 +42,13 @@ public abstract class Function<S, T> {
         Set<Class> intersection = this.inputClasses();
         intersection.retainAll(previous.outputClasses());
         if (!intersection.isEmpty()) {
-            prev_class = intersection.iterator().next();
-            prev = previous.outputConverter.get(prev_class);
+            previous_class = intersection.iterator().next();
+            previous_result = previous.getResult(previous_class);
+            Logger.log("Chosen interface: " + previous_class.toString());
         } else {
             throw new WrongClassFunctionResult("Expected smth else");
         }
-        Logger.log(this.toString() + "created");
-    }
-
-    public interface InputConverter {
-        void convert(Object prev, Class clz) throws Exception;
+        Logger.log(this.toString() + " created");
     }
 
     public interface OutputConverter {
